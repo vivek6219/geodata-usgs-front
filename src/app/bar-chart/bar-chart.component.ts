@@ -1,51 +1,99 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { ServerRequestComponent } from '../server-request/server-request.component';
 import { Chart } from 'chart.js/auto';
-import { Feature, FeatureCollection } from '../geojson-interfaces';
+
 @Component({
   selector: 'app-bar-chart',
   templateUrl: './bar-chart.component.html',
   styleUrls: ['./bar-chart.component.css'],
 })
-export class BarChartComponent {
-  public chart: any;
-  data: any[] = [];
-  chartData: any[] = [];
-  chartLabels: any[] = [];
-  chartOptions: any = { aspectRatio: 2.5 };
-  chartLegend = true;
-  chartType = 'bar';
+export class BarChartComponent implements OnInit {
+  public scatterChartOptions = {
+    responsive: true,
+    scales: {
+      x: {
+        type: 'linear',
+        position: 'bottom',
+      },
+      y: {
+        type: 'linear',
+        position: 'left',
+      },
+    },
+  };
 
-  constructor(private serverRequest: ServerRequestComponent) {}
+  public scatterChartLabels: string[] = [];
+  public scatterChartData: any[] = [
+    { data: [], label: 'Earthquake Magnitude' },
+  ];
+  data: any;
+  chartType = 'scatterChartType';
+
+  constructor(private request: ServerRequestComponent) {}
 
   ngOnInit(): void {
-    this.serverRequest.getEarthquakes().subscribe((geoJsonData) => {
-      this.data = geoJsonData;
+    this.request.getEarthquakes().subscribe((geoJsonData) => {
       this.processGeoJsonData(geoJsonData);
     });
   }
 
-  private processGeoJsonData(geoJsonData: any): void {
+  processGeoJsonData(geoJsonData: any): void {
     if (geoJsonData.type === 'FeatureCollection' && geoJsonData.features) {
-      // Assuming you want to extract magnitude and place for each earthquake
-      this.chartLabels = geoJsonData.features.map(
+      this.scatterChartLabels = geoJsonData.features.map(
         (feature: { properties: { place: any } }) => feature.properties.place
       );
-      console.log(this.chartLabels);
-      this.chartData = [
-        {
-          data: geoJsonData.features.map(
-            (feature: { properties: { mag: any } }) => feature.properties.mag
-          ),
-          label: 'Earthquake Magnitude',
-        },
-      ];
+      this.scatterChartData[0].data = geoJsonData.features.map(
+        (feature: {
+          geometry: { coordinates: any[] };
+          properties: { mag: number };
+        }) => ({
+          x: feature.geometry.coordinates[0], // Longitude
+          y: feature.geometry.coordinates[1], // Latitude
+          r: feature.properties.mag * 5, // Radius proportional to magnitude
+        })
+      );
     }
   }
-
-  showChartData() {}
 }
+
+// public chart: any;
+// data: any[] = [];
+// chartData: any[] = [];
+// chartLabels: any[] = [];
+// chartOptions: any = { aspectRatio: 2.5 };
+// chartLegend = true;
+// chartType = 'scatter';
+
+// constructor(private serverRequest: ServerRequestComponent) {}
+
+// ngOnInit(): void {
+//   this.serverRequest.getEarthquakes().subscribe((geoJsonData) => {
+//     this.data = geoJsonData;
+//     this.processGeoJsonData(geoJsonData);
+//   });
+// }
+
+// private processGeoJsonData(geoJsonData: any): void {
+//   if (geoJsonData.type === 'FeatureCollection' && geoJsonData.features) {
+//     // Assuming you want to extract magnitude and place for each earthquake
+//     this.chartLabels = geoJsonData.features.map(
+//       (feature: { properties: { place: any } }) => feature.properties.place
+//     );
+//     console.log(this.chartLabels);
+//     this.chartData = [
+//       {
+//         data: geoJsonData.features.map(
+//           (feature: { properties: { mag: any } }) => feature.properties.mag
+//         ),
+//         label: 'Earthquake Magnitude',
+//       },
+//     ];
+//   }
+// }
+
+//   showChartData() {}
+// }
 //   createChart() {
 //     const ctx = document.getElementById('MyChart') as HTMLCanvasElement;
 //     this.chart = new Chart(ctx, {
