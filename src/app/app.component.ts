@@ -18,7 +18,7 @@ export class AppComponent {
     this.eqData.getEarthquakes().subscribe((result) => {
       // console.log("result",result);
       this.jsonData = result;
-      console.log(this.jsonData);
+      // console.log(this.jsonData);
     });
   }
 
@@ -30,6 +30,6 @@ export class AppComponent {
       ) => a.featureslocaleCompare(b.features)
     );
 
-    console.log(this.jsonData);
+    // console.log(this.jsonData);
   }
 }

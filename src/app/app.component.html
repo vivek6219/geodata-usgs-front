@@ -9,20 +9,19 @@
 </head>
 
 <body>
+  <app-bar-chart></app-bar-chart>
 
-  <div class="light-mode">
-    <app-dark-mode></app-dark-mode>
-    <app-server-request></app-server-request>
+  <app-server-request></app-server-request>
+  <ul class="magnitudesWithLocation">
+    <ng-container *ngIf="jsonData">
+      <li *ngFor="let eq of jsonData.features">
+        {{eq.properties.title}}
+      </li>
+    </ng-container>
+  </ul>
 
-    <h2>Show Magnitudes of all geological related activity today:</h2>
-    <ul>
-      <ng-container *ngIf="jsonData">
-        <li *ngFor="let eq of jsonData.features">
-          {{eq.properties.title}}
-        </li>
-      </ng-container>
-    </ul>
-  </div>
+
+
 </body>
 
 </html>
