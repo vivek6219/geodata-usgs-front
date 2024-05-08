@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ServerRequestComponent } from '../server-request/server-request.component';
-import { Chart } from 'chart.js/auto';
+import { ScatterDataPoint } from './ScatterDataPointInterface';
+import { Chart, Tooltip, TooltipItem, plugins } from 'chart.js/auto';
+import { map } from 'rxjs';
+import { callback } from 'chart.js/dist/helpers/helpers.core';
 
 @Component({
   selector: 'app-bar-chart',
@@ -20,19 +23,33 @@ export class BarChartComponent implements OnInit {
         type: 'linear',
         position: 'left',
       },
+      mag: {
+        type: 'linear',
+        position: 'left',
+      },
+      // plugins: {
+      //   tooltip: {
+      //     backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      //     callbacks: {
+      //       label: function (context: TooltipItem<'scatter'>) {
+      //         const data = context.raw as ScatterDataPoint;
+      //         return `Place: ${data.label}, Mag: ${data.mag}`;
+      //       },
+      //     },
+      //   },
+      // },
     },
   };
 
   public scatterChartLabels: string[] = [];
-  public scatterChartData: any[] = [
-    { data: [], label: 'Earthquake Magnitude' },
-  ];
+  public scatterChartData: any[] = [{ data: [] }];
   data: any;
   chartType = 'scatterChartType';
 
   constructor(private request: ServerRequestComponent) {}
 
   ngOnInit(): void {
+    //fetch earthquake data
     this.request.getEarthquakes().subscribe((geoJsonData) => {
       this.processGeoJsonData(geoJsonData);
     });
@@ -46,93 +63,18 @@ export class BarChartComponent implements OnInit {
       this.scatterChartData[0].data = geoJsonData.features.map(
         (feature: {
           geometry: { coordinates: any[] };
-          properties: { mag: number };
+          properties: { mag: number; place: string };
         }) => ({
           x: feature.geometry.coordinates[0], // Longitude
           y: feature.geometry.coordinates[1], // Latitude
           r: feature.properties.mag * 5, // Radius proportional to magnitude
+          mag: feature.properties.mag,
         })
       );
     }
+    // console.log(this.scatterChartLabels);
+    // this.scatterChartLabels = Array.from(
+    //   Array(this.scatterChartData[0].data.length).keys()
+    // ).map(String);
   }
 }
-
-// public chart: any;
-// data: any[] = [];
-// chartData: any[] = [];
-// chartLabels: any[] = [];
-// chartOptions: any = { aspectRatio: 2.5 };
-// chartLegend = true;
-// chartType = 'scatter';
-
-// constructor(private serverRequest: ServerRequestComponent) {}
-
-// ngOnInit(): void {
-//   this.serverRequest.getEarthquakes().subscribe((geoJsonData) => {
-//     this.data = geoJsonData;
-//     this.processGeoJsonData(geoJsonData);
-//   });
-// }
-
-// private processGeoJsonData(geoJsonData: any): void {
-//   if (geoJsonData.type === 'FeatureCollection' && geoJsonData.features) {
-//     // Assuming you want to extract magnitude and place for each earthquake
-//     this.chartLabels = geoJsonData.features.map(
-//       (feature: { properties: { place: any } }) => feature.properties.place
-//     );
-//     console.log(this.chartLabels);
-//     this.chartData = [
-//       {
-//         data: geoJsonData.features.map(
-//           (feature: { properties: { mag: any } }) => feature.properties.mag
-//         ),
-//         label: 'Earthquake Magnitude',
-//       },
-//     ];
-//   }
-// }
-
-//   showChartData() {}
-// }
-//   createChart() {
-//     const ctx = document.getElementById('MyChart') as HTMLCanvasElement;
-//     this.chart = new Chart(ctx, {
-//       type: 'bar', //this denotes tha type of chart
-
-//       data: {
-//         // values on X-Axis
-//         labels: [
-//           '2022-05-10',
-//           '2022-05-11',
-//           '2022-05-12',
-//           '2022-05-13',
-//           '2022-05-14',
-//           '2022-05-15',
-//           '2022-05-16',
-//           '2022-05-17',
-//         ],
-//         datasets: [
-//           {
-//             label: 'Sales',
-//             data: ['467', '576', '572', '79', '92', '574', '573', '576'],
-//             backgroundColor: 'blue',
-//           },
-//           {
-//             label: 'Profit',
-//             data: ['542', '542', '536', '327', '17', '0.00', '538', '541'],
-//             backgroundColor: 'limegreen',
-//           },
-//         ],
-//       },
-//       options: {
-//         aspectRatio: 2.5,
-//       },
-//     });
-//   }
-// }
-
-export type BarChartData = Chart<
-  'bar',
-  (number | [number, number] | null)[],
-  unknown
->;

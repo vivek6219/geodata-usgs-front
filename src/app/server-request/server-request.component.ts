@@ -1,29 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import {catchError, retry} from 'rxjs/operators';
+import { catchError, retry } from 'rxjs/operators';
 
-Observable
+Observable;
 @Component({
   selector: 'app-server-request',
   templateUrl: './server-request.component.html',
-  styleUrls: ['./server-request.component.css']
+  styleUrls: ['./server-request.component.css'],
 })
-
 @Injectable()
 export class ServerRequestComponent {
-
   serverRequestComponent: any;
 
-  url: string = "http://localhost:8082/earthquakes/"
-  
-  constructor(private http: HttpClient){
+  url: string = 'http://localhost:8082/earthquakes/';
+  // url: string = 'http://3.147.59.190:8082/earthquakes/';
+  constructor(private http: HttpClient) {}
 
-  }
-  
-  getEarthquakes(){
+  getEarthquakes() {
     return this.http.get<any>(this.url);
   }
-
-
 }
