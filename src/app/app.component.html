@@ -9,18 +9,22 @@
 </head>
 
 <body>
-  <div>
+  <!-- <div>
     <app-bar-chart></app-bar-chart>
-  </div>
+  </div> -->
+  <!-- <h2>This is where the D3 charts are used</h2>
+  <app-d3-charts></app-d3-charts> -->
+  <!-- <h2>This is where deck-gl is being used</h2> -->
+  <app-deck-scatter></app-deck-scatter>
 
   <app-server-request></app-server-request>
-  <ul class="magnitudesWithLocation">
+  <!-- <ul class="magnitudesWithLocation">
     <ng-container *ngIf="jsonData">
       <li *ngFor="let eq of jsonData.features">
         {{eq.properties.title}}
       </li>
     </ng-container>
-  </ul>
+  </ul> -->
 
 
 

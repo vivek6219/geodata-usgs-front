@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
 
 Observable;
 @Component({
@@ -13,9 +12,9 @@ Observable;
 export class ServerRequestComponent {
   serverRequestComponent: any;
 
-  url: string = 'http://localhost:8082/earthquakes/';
-  // url: string = 'http://3.147.59.190:8082/earthquakes/';
-  constructor(private http: HttpClient) {}
+  url: string = 'http://localhost:8082/earthquakes';
+  // url: string = 'http://18.188.176.94:8082/earthquakes';
+  constructor(private http: HttpClient) { }
 
   getEarthquakes() {
     return this.http.get<any>(this.url);

@@ -46,7 +46,7 @@ export class BarChartComponent implements OnInit {
   data: any;
   chartType = 'scatterChartType';
 
-  constructor(private request: ServerRequestComponent) {}
+  constructor(private request: ServerRequestComponent) { }
 
   ngOnInit(): void {
     //fetch earthquake data
@@ -72,7 +72,7 @@ export class BarChartComponent implements OnInit {
         })
       );
     }
-    // console.log(this.scatterChartLabels);
+    console.log(this.scatterChartLabels);
     // this.scatterChartLabels = Array.from(
     //   Array(this.scatterChartData[0].data.length).keys()
     // ).map(String);
